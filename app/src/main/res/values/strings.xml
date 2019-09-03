@@ -4,16 +4,12 @@
     <string name="navigation_drawer_open">Menu gaveta aberto</string>
     <string name="navigation_drawer_close">Menu gavete fechado</string>
 
-    <string name="nav_header_title">Android Studio</string>
-    <string name="nav_header_subtitle">android.studio@android.com</string>
-    <string name="nav_header_desc">Navigation header</string>
-
     <string name="action_settings">Settings</string>
 
-    <style name="tx_login">Login</style>
-    <style name="tx_or">ou</style>
-    <style name="tx_me_sign_up">me Cadastrar</style>
-    <style name="tx_connected_as">Conectado como:</style>
+    <string name="tx_login">Login</string>
+    <string name="tx_or">ou</string>
+    <string name="tx_me_sign_up">me Cadastrar</string>
+    <string name="tx_connected_as">Conectado como:</string>
 
     <string name="item_all_shoes">Todos os calçados</string>
     <string name="item_flip_flops">Chinelos</string>
