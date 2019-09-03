@@ -117,6 +117,13 @@ class MainActivity :
     }
   }
 
+  private fun fillUserHeaderNavMenu() {
+    if (user.status) { /* Conectado */
+      iv_user.setImageResource(user.image)
+      tv_user.text = user.name
+    }
+  }
+
   /**
    * Método que inicializa a lista de itens de menu gaveta
    * que estará presente quando o usuário estiver ou não
@@ -279,13 +286,6 @@ class MainActivity :
     return when (item.itemId) {
       R.id.action_settings -> true
       else -> super.onOptionsItemSelected(item)
-    }
-  }
-
-  private fun fillUserHeaderNavMenu() {
-    if (user.status) { /* Conectado */
-      iv_user.setImageResource(user.image)
-      tv_user.text = user.name
     }
   }
 }

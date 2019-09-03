@@ -13,7 +13,7 @@ import br.com.mobiletkbrazil.blueshoes.R
 import br.com.mobiletkbrazil.blueshoes.domain.NavMenuItem
 import br.com.mobiletkbrazil.blueshoes.util.NavMenuItemDetails
 
-class NavMenuItemsAdapter(val menuItems: List<NavMenuItem>) :
+class NavMenuItemsAdapter(val items: List<NavMenuItem>) :
   RecyclerView.Adapter<NavMenuItemsAdapter.ViewHolder>() {
 
   lateinit var selectionTracker: SelectionTracker<Long>
@@ -37,10 +37,10 @@ class NavMenuItemsAdapter(val menuItems: List<NavMenuItem>) :
     holder: ViewHolder,
     position: Int
   ) {
-    holder.setData(menuItems[position])
+    holder.setData(items[position])
   }
 
-  override fun getItemCount() = menuItems.size
+  override fun getItemCount() = items.size
 
   inner class ViewHolder(
     itemView: View
