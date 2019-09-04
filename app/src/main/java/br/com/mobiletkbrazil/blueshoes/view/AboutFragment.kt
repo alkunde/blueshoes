@@ -16,7 +16,9 @@ import kotlinx.android.synthetic.main.fragment_about.*
 /**
  * A simple [Fragment] subclass.
  */
-class AboutFragment : Fragment(), View.OnClickListener {
+class AboutFragment :
+  Fragment(),
+  View.OnClickListener {
 
   override fun onCreateView(
     inflater: LayoutInflater, container: ViewGroup?,

@@ -228,6 +228,7 @@ class MainActivity :
   private fun getFragment(fragId: Long): Fragment {
     return when (fragId) {
       R.id.item_about.toLong() -> AboutFragment()
+      R.id.item_contact.toLong() -> ContactFragment()
       else -> AboutFragment()
     }
   }
