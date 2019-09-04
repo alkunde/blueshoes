@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.View
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.selection.SelectionTracker
 import androidx.recyclerview.selection.StorageStrategy
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -32,6 +33,7 @@ class MainActivity :
    */
   companion object {
     const val LOG = "log-bs"
+    const val FRAGMENT_TAG = "frag-tag"
   }
 
   val user = User(
@@ -61,6 +63,8 @@ class MainActivity :
     toggle.syncState()
 
     initNavMenu(savedInstanceState)
+
+    initFragment()
   }
 
   override fun onSaveInstanceState(outState: Bundle?) {
@@ -205,6 +209,74 @@ class MainActivity :
       selectNavMenuItemsLogged
   }
 
+  private fun initFragment() {
+    val supFrag = supportFragmentManager
+    var fragment = supFrag.findFragmentByTag(FRAGMENT_TAG)
+
+    /**
+     * Se não for uma reconstrução de atividade, então não
+     * haverá um fragmento em memória, então busca-se o
+     * inicial.
+     */
+    if (fragment == null) {
+      fragment = getFragment(R.id.item_about.toLong())
+    }
+
+    replaceFragment(fragment)
+  }
+
+  private fun getFragment(fragId: Long): Fragment {
+    return when (fragId) {
+      R.id.item_about.toLong() -> AboutFragment()
+      else -> AboutFragment()
+    }
+  }
+
+  private fun replaceFragment(fragment: Fragment) {
+    supportFragmentManager
+      .beginTransaction()
+      .replace(
+        R.id.fl_fragment_container,
+        fragment,
+        FRAGMENT_TAG
+      )
+      .commit()
+  }
+
+  fun updateToolbarTitleFragment(titleStringId: Int) {
+    toolbar.title = getString(titleStringId)
+  }
+
+  override fun onBackPressed() {
+    if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
+      drawer_layout.closeDrawer(GravityCompat.START)
+    } else {
+      super.onBackPressed()
+    }
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu): Boolean {
+    /**
+     * Infla o menu. Adiciona itens a barra de topo, se
+     * ela estiver presente.
+     */
+    menuInflater.inflate(R.menu.main, menu)
+    return true
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    /**
+     * Lidar com cliques de itens da barra de ação aqui.
+     * A barra de ação manipulará automaticamente os
+     * cliques no botão Home / Up, desde que seja
+     * especificada uma atividade pai em AndroidManifest.xml.
+     */
+    return when (item.itemId) {
+      R.id.action_settings -> true
+      else -> super.onOptionsItemSelected(item)
+    }
+  }
+
   inner class SelectObserverNavMenuItems(
     val callbackRemoveSelection: () -> Unit
   ) : SelectionTracker.SelectionObserver<Long>() {
@@ -251,41 +323,13 @@ class MainActivity :
       /**
        * TODO: Mudança de Fragment
        */
+      val fragment = getFragment(key)
+      replaceFragment(fragment)
 
       /**
        * Fechando o menu gaveta
        */
       drawer_layout.closeDrawer(GravityCompat.START)
-    }
-  }
-
-  override fun onBackPressed() {
-    if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-      drawer_layout.closeDrawer(GravityCompat.START)
-    } else {
-      super.onBackPressed()
-    }
-  }
-
-  override fun onCreateOptionsMenu(menu: Menu): Boolean {
-    /**
-     * Infla o menu. Adiciona itens a barra de topo, se
-     * ela estiver presente.
-     */
-    menuInflater.inflate(R.menu.main, menu)
-    return true
-  }
-
-  override fun onOptionsItemSelected(item: MenuItem): Boolean {
-    /**
-     * Lidar com cliques de itens da barra de ação aqui.
-     * A barra de ação manipulará automaticamente os
-     * cliques no botão Home / Up, desde que seja
-     * especificada uma atividade pai em AndroidManifest.xml.
-     */
-    return when (item.itemId) {
-      R.id.action_settings -> true
-      else -> super.onOptionsItemSelected(item)
     }
   }
 }
