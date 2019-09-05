@@ -1,5 +1,6 @@
 package br.com.mobiletkbrazil.blueshoes.view
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.core.view.GravityCompat
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -39,7 +40,7 @@ class MainActivity :
   val user = User(
     "André Kunde",
     R.drawable.user,
-    true
+    false
   )
 
   lateinit var navMenuItems: List<NavMenuItem>
@@ -333,5 +334,10 @@ class MainActivity :
        */
       drawer_layout.closeDrawer(GravityCompat.START)
     }
+  }
+
+  fun callLoginActivity(view: View) {
+    val intent = Intent(this, LoginActivity::class.java)
+    startActivity(intent)
   }
 }
