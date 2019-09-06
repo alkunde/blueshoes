@@ -1,235 +1,112 @@
 package br.com.mobiletkbrazil.blueshoes.view
 
-import android.app.Activity
-import android.graphics.Color
-import android.graphics.PorterDuff
+import android.content.Intent
 import android.os.Bundle
 import android.os.SystemClock
-import android.text.Editable
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.TextWatcher
-import android.text.style.ImageSpan
-import android.util.Patterns
 import android.view.KeyEvent
 import android.view.View
-import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.AppCompatActivity
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
-import br.com.mobiletkbrazil.blueshoes.R
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
-
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.content_form.*
 import kotlinx.android.synthetic.main.content_login.*
 import kotlinx.android.synthetic.main.text_view_privacy_policy_login.*
+import br.com.mobiletkbrazil.blueshoes.R
+import br.com.mobiletkbrazil.blueshoes.util.isValidEmail
+import br.com.mobiletkbrazil.blueshoes.util.isValidPassword
+import br.com.mobiletkbrazil.blueshoes.util.validate
 
 class LoginActivity :
-  AppCompatActivity(),
+  FormActivity(),
   TextView.OnEditorActionListener,
   KeyboardUtils.OnSoftInputChangedListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-    setContentView(R.layout.activity_login)
-    setSupportActionBar(toolbar)
-    supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     /**
-     * Hackcode para que a imagem de background do layout não
-     * se ajuste de acordo com a abertura do teclado de
-     * digitação. Caso utilizando o atributo
-     * android:background, o ajuste ocorre, desconfigurando o
-     * layout.
+     * Colocando a View de um arquivo XML como View filha
+     * do item indicado no terceiro argumento.
      */
-    window.setBackgroundDrawableResource(R.drawable.bg_activity)
+    View.inflate(
+      this,
+      R.layout.content_login,
+      fl_form
+    )
+
+    /**
+     *
+     */
+    KeyboardUtils.registerSoftInputChangedListener(this, this)
 
     /**
      * Colocando configuração de validação de campo de email
      * para enquanto o usuário informa o conteúdo deste campo.
      */
-    et_email.addTextChangedListener(object : TextWatcher {
-      override fun afterTextChanged(content: Editable) {
-        val message = getString(R.string.invalid_email)
-
-        et_email.error =
-          if (content.isNotEmpty() && Patterns.EMAIL_ADDRESS.matcher(content).matches()) {
-            null
-          } else {
-            message
-          }
-      }
-
-      override fun beforeTextChanged(
-        content: CharSequence?,
-        start: Int,
-        count: Int,
-        after: Int
-      ) {
-      }
-
-      override fun onTextChanged(
-        content: CharSequence?,
-        start: Int,
-        before: Int,
-        count: Int
-      ) {
-      }
-    })
+    et_email.text.toString()
+    et_email.validate(
+      {
+        it.isValidEmail()
+      },
+      getString(R.string.invalid_email)
+    )
 
     /**
      * Colocando configuração de validação de campo de senha
      * para enquanto o usuário informa o conteúdo deste campo.
      */
-    et_password.addTextChangedListener(object : TextWatcher {
-      override fun afterTextChanged(content: Editable) {
-        val message = getString(R.string.invalid_password)
-
-        et_password.error =
-          if (content.length > 5) {
-            null
-          } else {
-            message
-          }
-      }
-
-      override fun beforeTextChanged(
-        content: CharSequence?,
-        start: Int,
-        count: Int,
-        after: Int
-      ) {
-      }
-
-      override fun onTextChanged(
-        content: CharSequence?,
-        start: Int,
-        before: Int,
-        count: Int
-      ) {
-      }
-    })
+    et_password.validate(
+      {
+        it.isValidPassword()
+      },
+      getString(R.string.invalid_password)
+    )
 
     et_password.setOnEditorActionListener(this)
+  }
 
-    /**
-     * Com a API KeyboardUtils conseguimos de maneira
-     * simples obter o status atual do teclado virtual (aberto /
-     * fechado) e assim prosseguir com algoritmos de ajuste de
-     * layout.
-     */
-    KeyboardUtils.registerSoftInputChangedListener(this, this)
+  override fun onDestroy() {
+    KeyboardUtils.unregisterSoftInputChangedListener(this)
+    super.onDestroy()
   }
 
   /**
-   * Apresenta a tela de bloqueio que diz ao usuário que
-   * algo está sendo processado em background e que ele
-   * deve aguardar.
+   * Caso o usuário toque no botão "Done" do teclado virtual
+   * ao invés de tocar no botão "Entrar". Mesmo assim temos
+   * de processar o formulário.
    */
-  private fun showProxy(status: Boolean) {
-    fl_proxy_container.visibility = if (status)
-      View.VISIBLE
-    else
-      View.GONE
+  override fun onEditorAction(
+    view: TextView,
+    actionId: Int,
+    event: KeyEvent?
+  ): Boolean {
+
+    mainAction()
+    return false
   }
 
-  /**
-   * Método responsável por apresentar um SnackBar com as
-   * corretas configurações de acordo com o feedback do
-   * back-end Web.
-   */
-  private fun snackBarFeedback(
-    viewContainer: ViewGroup,
-    status: Boolean,
-    message: String
-  ) {
-    val snackBar = Snackbar
-      .make(
-        viewContainer,
-        message,
-        Snackbar.LENGTH_LONG
-      )
-
-    /**
-     * Acessando o TextView padrão do SnackBar para assim
-     * colocarmos um ícone nele via objeto Spannable.
-     */
-    val snackBarView = snackBar.view
-    val textView = snackBarView.findViewById(
-      com.google.android.material.R.id.snackbar_text
-    ) as TextView
-
-    /**
-     * Criando o objeto Drawable que entrará como ícone
-     * inicial no texto do SnackBar.
-     */
-    val iconResource = if (status)
-      R.drawable.ic_check_black_18dp
-    else
-      R.drawable.ic_close_black_18dp
-
-    val img = ResourcesCompat
-      .getDrawable(
-        resources,
-        iconResource,
-        null
-      )
-    img!!.setBounds(
-      0,
-      0,
-      img.intrinsicWidth,
-      img.intrinsicHeight
-    )
-
-    val iconColor = if (status)
-      ContextCompat
-        .getColor(
-          this,
-          R.color.colorNavButton
-        )
-    else
-      Color.RED
-    img.setColorFilter(iconColor, PorterDuff.Mode.SRC_ATOP)
-
-    val spannedText = SpannableString("     ${textView.text}")
-    spannedText.setSpan(
-      ImageSpan(img, ImageSpan.ALIGN_BOTTOM),
-      0,
-      1,
-      Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-    )
-
-    textView.setText(spannedText, TextView.BufferType.SPANNABLE)
-
-    snackBar.show()
+  override fun mainAction(view: View?) {
+    blockFields(true)
+    isMainButtonSending(true)
+    showProxy(true)
+    backEndFakeDelay()
   }
 
-  /**
-   * Necessário para que os campos de formulário não possam
-   * ser acionados depois de enviados os dados.
-   */
-  private fun blockFields(status: Boolean) {
+  override fun blockFields(status: Boolean) {
     et_email.isEnabled = !status
     et_password.isEnabled = !status
     bt_login.isEnabled = !status
   }
 
-  /**
-   * Muda o rótulo do botão de login de acordo com o status
-   * do envio de dados de login.
-   */
-  private fun isSignInGoing(status: Boolean) {
-    bt_login.text = if (status)
-      getString(R.string.sign_in_going) /* Entrando... */
-    else
-      getString(R.string.sign_in) /* Entrar */
+  override fun isMainButtonSending(status: Boolean) { /* Antigo isSignInGoing */
+    bt_login.text =
+      if (status)
+        getString(R.string.sign_in_going)
+      else
+        getString(R.string.sign_in)
   }
 
   private fun backEndFakeDelay() {
@@ -243,7 +120,7 @@ class LoginActivity :
 
         runOnUiThread {
           blockFields(false)
-          isSignInGoing(false)
+          isMainButtonSending(false)
           showProxy(false)
 
           snackBarFeedback(
@@ -256,37 +133,11 @@ class LoginActivity :
     }.start()
   }
 
-  fun login(view: View? = null) {
-    blockFields(true)
-    isSignInGoing(true)
-    showProxy(true)
-    backEndFakeDelay()
-  }
-
-  private fun closeVirtualKeyBoard(view: View) {
-    val imm = getSystemService(
-      Activity.INPUT_METHOD_SERVICE
-    ) as InputMethodManager
-
-    imm.hideSoftInputFromWindow(view.windowToken, 0)
-  }
-
-  /**
-   * Caso o usuário toque no botão "Done" do teclado virtual
-   * ao invés de tocar no botão "Entrar". Mesmo assim temos
-   * de processar o formulário.
-   */
-  override fun onEditorAction(
-    view: TextView,
-    actionId: Int,
-    event: KeyEvent?
-  ): Boolean {
-    return if (actionId == EditorInfo.IME_ACTION_DONE) {
-      closeVirtualKeyBoard(view)
-      login()
-      true /* Indica que o algoritmo do método consumiu o evento */
-    } else {
-      false
+  override fun onSoftInputChanged(height: Int) {
+    if (ScreenUtils.isPortrait()) {
+      changePrivacyPolicyConstraints(
+        KeyboardUtils.isSoftInputVisible(this)
+      )
     }
   }
 
@@ -352,16 +203,50 @@ class LoginActivity :
     constraintSet.applyTo(parent)
   }
 
-  override fun onDestroy() {
-    KeyboardUtils.unregisterSoftInputChangedListener(this)
-    super.onDestroy()
+  /* Listeners de clique */
+  fun callForgotPasswordActivity(view: View) {
+    Toast
+      .makeText(
+        this,
+        "TODO: callForgotPasswordActivity()",
+        Toast.LENGTH_SHORT
+      )
+      .show()
   }
 
-  override fun onSoftInputChanged(height: Int) {
-    if (ScreenUtils.isPortrait()) {
-      changePrivacyPolicyConstraints(
-        KeyboardUtils.isSoftInputVisible(this)
+  fun callSignUpActivity(view: View) {
+    Toast
+      .makeText(
+        this,
+        "TODO: callSignUpActivity()",
+        Toast.LENGTH_SHORT
       )
-    }
+      .show()
+  }
+
+  fun callPrivacyPolicyFragment(view: View) {
+    val intent = Intent(
+      this,
+      MainActivity::class.java
+    )
+
+    /**
+     * Para saber qual fragmento abrir quando a
+     * MainActivity voltar ao foreground.
+     */
+    intent.putExtra(
+      MainActivity.FRAGMENT_ID,
+      R.id.item_privacy_policy
+    )
+
+    /**
+     * Removendo da pilha de atividades a primeira
+     * MainActivity aberta (e a LoginActivity), para
+     * deixar somente a nova MainActivity com uma nova
+     * configuração de fragmento aberto.
+     */
+    intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP
+
+    startActivity(intent)
   }
 }

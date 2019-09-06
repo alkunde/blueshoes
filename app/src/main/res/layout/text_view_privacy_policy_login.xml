@@ -5,6 +5,7 @@
     android:id="@+id/tv_privacy_policy"
     style="@style/TextViewLink"
     android:layout_marginTop="0dp"
+    android:onClick="callPrivacyPolicyFragment"
     android:text="@string/privacy_policy"
     app:layout_constraintBottom_toBottomOf="parent"
     app:layout_constraintLeft_toLeftOf="parent"
