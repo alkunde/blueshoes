@@ -45,17 +45,10 @@ class NavMenuItemsAdapter(val items: List<NavMenuItem>) :
   inner class ViewHolder(
     itemView: View
   ) : RecyclerView.ViewHolder(itemView) {
-    private val ivIcon: ImageView
-    private val tvLabel: TextView
+    private val ivIcon: ImageView = itemView.findViewById(R.id.iv_icon)
+    private val tvLabel: TextView = itemView.findViewById(R.id.tv_label)
 
-    val itemDetails: NavMenuItemDetails
-
-    init {
-      ivIcon = itemView.findViewById(R.id.iv_icon)
-      tvLabel = itemView.findViewById(R.id.tv_label)
-
-      itemDetails = NavMenuItemDetails()
-    }
+    val itemDetails: NavMenuItemDetails = NavMenuItemDetails()
 
     fun setData(item: NavMenuItem) {
       tvLabel.text = item.label
@@ -75,7 +68,7 @@ class NavMenuItemsAdapter(val items: List<NavMenuItem>) :
       itemDetails.item = item
       itemDetails.adapterPosition = adapterPosition
 
-      if (selectionTracker.isSelected(itemDetails.getSelectionKey())) {
+      if (selectionTracker.isSelected(itemDetails.selectionKey)) {
         itemView.setBackgroundColor(
           ContextCompat.getColor(
             itemView.context,

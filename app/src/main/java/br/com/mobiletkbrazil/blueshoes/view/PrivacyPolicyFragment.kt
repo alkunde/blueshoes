@@ -96,7 +96,7 @@ class PrivacyPolicyFragment : Fragment() {
       val textEndPos = text.getSpanEnd(annotation)
       val spanFlag = Spannable.SPAN_EXCLUSIVE_EXCLUSIVE
 
-      if (annotation.key.equals("title")) { /* Títulos */
+      if (annotation.key == "title") { /* Títulos */
         /**
          * Todos os títulos têm uma fonte customizada
          * aplicada a eles, mais precisamente a fonte
@@ -140,7 +140,7 @@ class PrivacyPolicyFragment : Fragment() {
           textEndPos,
           spanFlag
         )
-      } else if (annotation.key.equals("link")) { /* Links */
+      } else if (annotation.key == "link") { /* Links */
         /**
          * Os "+1" e "-1" sendo utilizados é
          * para evitar que trechos que não fazem

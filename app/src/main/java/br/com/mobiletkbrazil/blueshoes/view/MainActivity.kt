@@ -33,12 +33,11 @@ class MainActivity :
    * projeto.
    */
   companion object {
-    const val LOG = "log-bs"
     const val FRAGMENT_TAG = "frag-tag"
-    const val FRAGMENT_ID = "frag-id";
+    const val FRAGMENT_ID = "frag-id"
   }
 
-  val user = User(
+  private val user = User(
     "André Kunde",
     R.drawable.user,
     false

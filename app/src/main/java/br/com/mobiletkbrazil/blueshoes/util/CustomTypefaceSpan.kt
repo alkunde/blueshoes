@@ -8,7 +8,7 @@ import android.text.style.TypefaceSpan
 class CustomTypefaceSpan(typeFace: Typeface) :
   TypefaceSpan("") {
 
-  val newTypeFace = typeFace
+  private val newTypeFace = typeFace
 
   override fun updateDrawState(paint: TextPaint) {
     applyCustomTypeFace(paint, newTypeFace)
@@ -25,11 +25,7 @@ class CustomTypefaceSpan(typeFace: Typeface) :
     val styleAnterior: Int
     val typefaceAnterior = paint.typeface
 
-    if (typefaceAnterior == null) {
-      styleAnterior = 0
-    } else {
-      styleAnterior = typefaceAnterior.style
-    }
+    styleAnterior = typefaceAnterior?.style ?: 0
 
     /**
      * Para verificar a compatibilidade de estilos.

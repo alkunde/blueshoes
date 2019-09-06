@@ -5,7 +5,6 @@
     android:id="@+id/rl_header_user_logged"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/nav_header"
     android:paddingLeft="40dp"
     android:paddingTop="30dp"
     android:paddingRight="40dp"
