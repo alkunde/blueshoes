@@ -4,7 +4,7 @@ import androidx.recyclerview.selection.ItemKeyProvider
 import br.com.mobiletkbrazil.blueshoes.domain.NavMenuItem
 
 class NavMenuItemKeyProvider(
-  val items: List<NavMenuItem>
+  private val items: List<NavMenuItem>
 ) : ItemKeyProvider<Long>(SCOPE_MAPPED) {
 
   /**

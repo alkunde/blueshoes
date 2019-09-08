@@ -1,8 +1,6 @@
 package br.com.mobiletkbrazil.blueshoes.view
 
 import android.os.Bundle
-import android.view.View
-import kotlinx.android.synthetic.main.content_form.*
 import kotlinx.android.synthetic.main.content_login.*
 import br.com.mobiletkbrazil.blueshoes.R
 import br.com.mobiletkbrazil.blueshoes.util.isValidEmail
@@ -16,16 +14,6 @@ class ForgotPasswordActivity :
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
-
-    /**
-     * Colocando a View de um arquivo XML como View filha
-     * do item indicado no terceiro argumento.
-     */
-    View.inflate(
-      this,
-      R.layout.content_forgot_password,
-      fl_form
-    )
 
     /**
      * Colocando configuração de validação de campo de email
@@ -42,10 +30,9 @@ class ForgotPasswordActivity :
     tv_info_block.text = getString(R.string.forgot_password_info)
   }
 
-  override fun mainAction(view: View?) {
-    blockFields(true)
-    isMainButtonSending(true)
-    showProxy(true)
+  override fun getLayoutResourceID() = R.layout.content_forgot_password
+
+  override fun backEndFakeDelay() {
     backEndFakeDelay(
       false,
       getString(R.string.invalid_login_email)
@@ -57,7 +44,7 @@ class ForgotPasswordActivity :
     bt_recover_password.isEnabled = !status
   }
 
-  override fun isMainButtonSending(status: Boolean) { /* Antigo isSignInGoing */
+  override fun isMainButtonSending(status: Boolean) {
     bt_login.text =
       if (status)
         getString(R.string.sign_in_going)

@@ -13,7 +13,7 @@ import br.com.mobiletkbrazil.blueshoes.view.NavMenuItemsAdapter
  * de uma ocorrência de RecyclerView.ViewHolder.
  */
 class NavMenuItemDetailsLookup(
-  val rvMenuItems: RecyclerView
+  private val rvMenuItems: RecyclerView
 ) : ItemDetailsLookup<Long>() {
 
   /**

@@ -44,14 +44,26 @@ abstract class FormActivity :
      * layout.
      */
     window.setBackgroundDrawableResource(R.drawable.bg_activity)
+
+    /**
+     * Colocando a View de um arquivo XML como View filha
+     * do item indicado no terceiro argumento.
+     */
+    View.inflate(
+      this,
+      getLayoutResourceID(),
+      fl_form
+    )
   }
+
+  abstract fun getLayoutResourceID(): Int
 
   /**
    * Apresenta a tela de bloqueio que diz ao usuário que
    * algo está sendo processado em background e que ele
    * deve aguardar.
    */
-  protected fun showProxy(status: Boolean) {
+  private fun showProxy(status: Boolean) {
     fl_proxy_container.visibility =
       if (status)
         View.VISIBLE
@@ -64,7 +76,7 @@ abstract class FormActivity :
    * corretas configurações de acordo com o feedback do
    * back-end Web.
    */
-  protected fun snackBarFeedback(
+  private fun snackBarFeedback(
     viewContainer: ViewGroup,
     status: Boolean,
     message: String
@@ -138,11 +150,22 @@ abstract class FormActivity :
   }
 
   /**
-   * Responsável por conter o algorítmo de evento / validação
-   * de dados. Algorítmo vinculado ao menos ao principal
+   * Método template.
+   * Responsável por conter o algoritmo de envio / validação
+   * de dados. Algoritmo vinculado ao menos ao principal
    * botão em tela.
    */
-  abstract fun mainAction(view: View? = null)
+  fun mainAction(view: View? = null) {
+    blockFields(true)
+    isMainButtonSending(true)
+    showProxy(true)
+    backEndFakeDelay()
+  }
+
+  /**
+   * Método único.
+   */
+  abstract fun backEndFakeDelay()
 
   /**
    * Necessário para que os campos de formulário não possam

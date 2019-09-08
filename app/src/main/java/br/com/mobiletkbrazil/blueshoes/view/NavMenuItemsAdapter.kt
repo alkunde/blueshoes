@@ -13,8 +13,9 @@ import br.com.mobiletkbrazil.blueshoes.R
 import br.com.mobiletkbrazil.blueshoes.domain.NavMenuItem
 import br.com.mobiletkbrazil.blueshoes.util.NavMenuItemDetails
 
-class NavMenuItemsAdapter(val items: List<NavMenuItem>) :
-  RecyclerView.Adapter<NavMenuItemsAdapter.ViewHolder>() {
+class NavMenuItemsAdapter(
+  private val items: List<NavMenuItem>
+) : RecyclerView.Adapter<NavMenuItemsAdapter.ViewHolder>() {
 
   lateinit var selectionTracker: SelectionTracker<Long>
 

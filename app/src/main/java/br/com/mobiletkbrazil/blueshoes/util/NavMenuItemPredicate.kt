@@ -12,7 +12,7 @@ import br.com.mobiletkbrazil.blueshoes.data.NavMenuItemsDataBase
  * em ItemKeyProvider.
  */
 class NavMenuItemPredicate(
-  val activity: MainActivity
+  private val activity: MainActivity
 ) : SelectionTracker.SelectionPredicate<Long>() {
 
   /**
