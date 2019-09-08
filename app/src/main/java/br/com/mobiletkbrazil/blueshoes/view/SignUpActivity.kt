@@ -3,23 +3,21 @@ package br.com.mobiletkbrazil.blueshoes.view
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.blankj.utilcode.util.KeyboardUtils
 import com.blankj.utilcode.util.ScreenUtils
-import kotlinx.android.synthetic.main.content_form.*
-import kotlinx.android.synthetic.main.content_login.*
-import kotlinx.android.synthetic.main.text_view_privacy_policy_login.*
 import br.com.mobiletkbrazil.blueshoes.R
 import br.com.mobiletkbrazil.blueshoes.util.isValidEmail
 import br.com.mobiletkbrazil.blueshoes.util.isValidPassword
 import br.com.mobiletkbrazil.blueshoes.util.validate
+import kotlinx.android.synthetic.main.content_form.*
+import kotlinx.android.synthetic.main.content_sign_up.*
+import kotlinx.android.synthetic.main.nav_header_user_not_logged.*
+import kotlinx.android.synthetic.main.text_view_privacy_policy_login.*
 
-class LoginActivity :
+class SignUpActivity :
   FormActivity(),
-  TextView.OnEditorActionListener,
   KeyboardUtils.OnSoftInputChangedListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,12 +29,15 @@ class LoginActivity :
      */
     View.inflate(
       this,
-      R.layout.content_login,
+      R.layout.content_sign_up,
       fl_form
     )
 
     /**
-     *
+     * Com a API KeyboardUtils conseguimos de maneira
+     * simples obter o status atual do teclado virtual (aberto /
+     * fechado) e assim prosseguir com algoritmos de ajuste de
+     * layout.
      */
     KeyboardUtils.registerSoftInputChangedListener(this, this)
 
@@ -44,7 +45,6 @@ class LoginActivity :
      * Colocando configuração de validação de campo de email
      * para enquanto o usuário informa o conteúdo deste campo.
      */
-    et_email.text.toString()
     et_email.validate(
       {
         it.isValidEmail()
@@ -63,7 +63,26 @@ class LoginActivity :
       getString(R.string.invalid_password)
     )
 
-    et_password.setOnEditorActionListener(this)
+    /**
+     * Colocando configuração de validação de campo de
+     * confirmação de senha para enquanto o usuário informa o
+     * conteúdo deste campo.
+     */
+    et_confirm_password.validate(
+      {
+        /**
+         * O toString() em et_password.text.toString() é
+         * necessário, caso contrário a validação falha
+         * mesmo quando é para ser ok.
+         */
+        (et_password.text.isNotEmpty()
+          && it.equals(et_password.text.toString()))
+          || et_password.text.isEmpty()
+      },
+      getString(R.string.invalid_confirmed_password)
+    )
+
+    et_confirm_password.setOnEditorActionListener(this)
   }
 
   override fun onDestroy() {
@@ -77,30 +96,29 @@ class LoginActivity :
     showProxy(true)
     backEndFakeDelay(
       false,
-      getString(R.string.invalid_login)
+      getString(R.string.invalid_sign_up_email)
     )
   }
 
   override fun blockFields(status: Boolean) {
     et_email.isEnabled = !status
     et_password.isEnabled = !status
-    bt_login.isEnabled = !status
+    et_confirm_password.isEnabled = !status
+    bt_sign_up.isEnabled = !status
   }
 
   override fun isMainButtonSending(status: Boolean) { /* Antigo isSignInGoing */
-    bt_login.text =
+    bt_sign_up.text =
       if (status)
-        getString(R.string.sign_in_going)
+        getString(R.string.sign_up_going)
       else
-        getString(R.string.sign_in)
+        getString(R.string.sign_up)
   }
 
   override fun onSoftInputChanged(height: Int) {
-    if (ScreenUtils.isPortrait()) {
-      changePrivacyPolicyConstraints(
-        KeyboardUtils.isSoftInputVisible(this)
-      )
-    }
+    changePrivacyPolicyConstraints(
+      KeyboardUtils.isSoftInputVisible(this)
+    )
   }
 
   private fun changePrivacyPolicyConstraints(
@@ -133,7 +151,7 @@ class LoginActivity :
       ConstraintLayout.LayoutParams.PARENT_ID
     )
 
-    if (isKeyBoardOpened) {
+    if (isKeyBoardOpened || ScreenUtils.isLandscape()) {
       /**
        * Se o teclado virtual estiver aberto, então
        * mude a configuração da View alvo
@@ -165,25 +183,11 @@ class LoginActivity :
     constraintSet.applyTo(parent)
   }
 
+  fun callLoginActivity(view: View) {
+    finish()
+  }
+
   /* Listeners de clique */
-  fun callForgotPasswordActivity(view: View) {
-    val intent = Intent(
-      this,
-      ForgotPasswordActivity::class.java
-    )
-
-    startActivity(intent)
-  }
-
-  fun callSignUpActivity(view: View) {
-    val intent = Intent(
-      this,
-      SignUpActivity::class.java
-    )
-
-    startActivity(intent)
-  }
-
   fun callPrivacyPolicyFragment(view: View) {
     val intent = Intent(
       this,
