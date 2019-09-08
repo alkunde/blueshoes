@@ -13,7 +13,6 @@ import br.com.mobiletkbrazil.blueshoes.util.isValidPassword
 import br.com.mobiletkbrazil.blueshoes.util.validate
 import kotlinx.android.synthetic.main.content_form.*
 import kotlinx.android.synthetic.main.content_sign_up.*
-import kotlinx.android.synthetic.main.nav_header_user_not_logged.*
 import kotlinx.android.synthetic.main.text_view_privacy_policy_login.*
 
 class SignUpActivity :
@@ -161,7 +160,7 @@ class SignUpActivity :
       constraintSet.connect(
         privacyId,
         ConstraintLayout.LayoutParams.TOP,
-        tv_sign_up.id,
+        bt_sign_up.id,
         ConstraintLayout.LayoutParams.BOTTOM,
         (12 * ScreenUtils.getScreenDensity()).toInt()
       )
