@@ -13,6 +13,7 @@ import android.widget.Toast
 
 import br.com.mobiletkbrazil.blueshoes.R
 import kotlinx.android.synthetic.main.fragment_contact.*
+import kotlinx.android.synthetic.main.info_block.*
 
 /**
  * A simple [Fragment] subclass.
@@ -153,5 +154,7 @@ class ContactFragment :
 
     iv_address.setOnClickListener(this)
     tv_address.setOnClickListener(this)
+
+    tv_info_block.text = getString(R.string.contact_frag_info)
   }
 }

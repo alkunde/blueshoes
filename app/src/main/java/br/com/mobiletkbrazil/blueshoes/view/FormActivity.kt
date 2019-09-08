@@ -3,9 +3,11 @@ package br.com.mobiletkbrazil.blueshoes.view
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.os.Bundle
+import android.os.SystemClock
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.ImageSpan
+import android.view.KeyEvent
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +18,12 @@ import androidx.core.content.res.ResourcesCompat
 import br.com.mobiletkbrazil.blueshoes.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.app_bar.*
+import kotlinx.android.synthetic.main.content_form.*
 import kotlinx.android.synthetic.main.proxy_screen.*
 
-abstract class FormActivity : AppCompatActivity() {
+abstract class FormActivity :
+  AppCompatActivity(),
+  TextView.OnEditorActionListener {
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -161,5 +166,51 @@ abstract class FormActivity : AppCompatActivity() {
       return true
     }
     return super.onOptionsItemSelected(item)
+  }
+
+  /**
+   * Caso o usuário toque no botão "Done" do teclado virtual
+   * ao invés de tocar no botão "Entrar". Mesmo assim temos
+   * de processar o formulário.
+   */
+  override fun onEditorAction(
+    view: TextView,
+    actionId: Int,
+    event: KeyEvent?
+  ): Boolean {
+
+    mainAction()
+    return false
+  }
+
+  /**
+   * Fake method - Somente para testes temporários em atividades
+   * e fragmentos que contêm formulários.
+   */
+  protected fun backEndFakeDelay(
+    statusAction: Boolean,
+    feedbackMessage: String
+  ) {
+    Thread {
+      kotlin.run {
+        /**
+         * Simulando um delay de latência de
+         * 1 segundo.
+         */
+        SystemClock.sleep(1000)
+
+        runOnUiThread {
+          blockFields(false)
+          isMainButtonSending(false)
+          showProxy(false)
+
+          snackBarFeedback(
+            fl_form_container,
+            statusAction,
+            feedbackMessage
+          )
+        }
+      }
+    }.start()
   }
 }
