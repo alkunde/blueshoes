@@ -40,6 +40,9 @@ dependencies {
     /* AndroidUtilCode API */
     implementation 'com.blankj:utilcode:1.23.7'
 
+    // Icons
+    implementation 'net.steamcrafted:materialiconlib:1.1.5'
+
     // Tests
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     testImplementation 'junit:junit:4.12'
